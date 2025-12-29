@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "applogging"
+version = "1.0.0
+authors = [
+  { name="Jason Piszcyk", email="Jason.Piszcyk@gmail.com" },
+]
+description = "Application Components - Network Communications"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "pytest",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/JasonPiszcyk/AppLogging"
+"Bug Tracker" = "https://github.com/JasonPiszcyk/AppLogging/issues"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
