@@ -155,6 +155,84 @@ def clear_handlers(logger: logging.Logger | None = None):
         logger.removeHandler(_handler)
 
 
+#
+# init_console_logger
+#
+def init_console_logger(name: str | None = None) -> logging.Logger:
+    '''
+    Create a standard logger to the console
+
+    Args:
+        name (str | None): The name of the logger to init, or the root logger
+            if name is None
+
+    Returns:
+        logging.Logger: A logger
+
+    Raises:
+        AssertionError:
+            when name is not a string or None
+    '''
+    assert (
+        name is None or
+        (isinstance(name, str) and name)
+    ), (
+        "'name' must be None or a non-empty string"
+    )
+
+    # Create the logger
+    _logger = get_logger(name=name)
+
+    # Clear any existing handlers
+    clear_handlers(_logger)
+
+    # Add the handl,er
+    _logger.addHandler(handler_to_console())
+
+    return _logger
+
+
+#
+# init_file_logger
+#
+def init_file_logger(
+        name: str | None = None,
+        filename: str = ""
+) -> logging.Logger:
+    '''
+    Create a standard logger to a rotating file
+
+    Args:
+        name (str | None): The name of the logger to init, or the root logger
+            if name is None
+        filename (str): The name of the file to log to
+
+    Returns:
+        logging.Logger: A logger
+
+    Raises:
+        AssertionError:
+            when name is not a string or None
+    '''
+    assert (
+        name is None or
+        (isinstance(name, str) and name)
+    ), (
+        "'name' must be None or a non-empty string"
+    )
+
+    # Create the logger
+    _logger = get_logger(name=name)
+
+    # Clear any existing handlers
+    clear_handlers(_logger)
+
+    # Add the handl,er
+    _logger.addHandler(handler_to_timed_rotating_file(filename=filename))
+
+    return _logger
+
+
 ###########################################################################
 #
 # Query Logging Config
@@ -201,7 +279,7 @@ def set_log_level(
         level: str = DEFAULT_LOG_LEVEL
 ):
     '''
-    SZet the log level for the logger
+    Set the log level for the logger
 
     Args:
         logger (Logger): The logger to update
@@ -315,15 +393,15 @@ def handler_to_console(
 # handler_to_file
 #
 def handler_to_file(
-        format:str = DEFAULT_LOG_FORMAT,
-        filename: str = ""
+        filename: str = "",
+        format:str = DEFAULT_LOG_FORMAT
 ) -> logging.Handler:
     '''
     Create a handler to output to a file
 
     Args:
-        format (str): The format to use for the log output
         filename (str): The name of the file to log to
+        format (str): The format to use for the log output
 
     Returns:
         Handler: The handler for output stream
@@ -355,8 +433,8 @@ def handler_to_file(
 # handler_to_timed_rotating_file
 #
 def handler_to_timed_rotating_file(
-        format:str = DEFAULT_LOG_FORMAT,
         filename: str = "",
+        format:str = DEFAULT_LOG_FORMAT,
         when:str = DEFAULT_TIMED_ROTATING_FILE_WHEN,
         at_time: datetime.time = DEFAULT_TIMED_ROTATING_FILE_AT_TIME,
         copies: int = DEFAULT_TIMED_ROTATING_FILE_COPIES
@@ -365,8 +443,8 @@ def handler_to_timed_rotating_file(
     Create a handler to output to a file that is rotated on a timed basis
 
     Args:
-        format (str): The format to use for the log output
         name (str): The name of the file to log to
+        format (str): The format to use for the log output
         when (str): Weekday on wich to rotate the file
             one of: "W0", "W1", "W2", "W3", "W4", "W5", "W6"
         at_time (datetime.time): A time structure indicating the time to rotate
