@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-General validation functions
+PyTest - Test of usage recipies
 
 Copyright (C) 2025 Jason Piszcyk
 Email: Jason.Piszcyk@gmail.com
@@ -24,16 +24,20 @@ along with this program (See file: COPYING). If not, see
 # Imports
 #
 ###########################################################################
-from __future__ import annotations
-
 # Shared variables, constants, etc
+from tests.constants import *
 
 # System Modules
 
 # Local app modules
+from applogging.logging import (
+    get_logger,
+    init_console_logger,
+    init_file_logger
+)
 
 # Imports for python variable type hints
-
+from pytest import CaptureFixture
 
 ###########################################################################
 #
@@ -44,11 +48,9 @@ from __future__ import annotations
 # Types
 #
 
-
 #
 # Constants
 #
-
 
 #
 # Global Variables
@@ -57,18 +59,39 @@ from __future__ import annotations
 
 ###########################################################################
 #
-# Module
+# The tests...
 #
 ###########################################################################
+#
+# Log to Console
+#
+class Test_LogToConsole():
+    '''
+    Test Class - Log to Console
 
+    Attributes:
+        None
+    '''
+    #
+    #
+    #
+    def test_log_error(self, capsys: CaptureFixture):
+        '''
+        Test logging an error (default threshold is INFO)
 
-###########################################################################
-#
-# In case this is run directly rather than imported...
-#
-###########################################################################
-'''
-Handle case of being run directly rather than imported
-'''
-if __name__ == "__main__":
-    pass
+        Args:
+            capfd (str, str): Fixture to capture stdout/stderr 
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError:
+                when test fails
+        '''
+        _log = init_console_logger(name=LOGGER_NAME)
+
+        _log.error(DEFAULT_LOG_STRING)
+        _cap = capsys.readouterr()
+
+        assert _cap.err == DEFAULT_LOG_STRING

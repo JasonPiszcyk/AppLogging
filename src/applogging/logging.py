@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-AppLogger Class
+Logging Functions
 
 Copyright (C) 2025 Jason Piszcyk
 Email: Jason.Piszcyk@gmail.com
@@ -34,6 +34,10 @@ import logging.handlers
 import datetime
 
 # Local app modules
+from applogging.constants import (
+    DEFAULT_LOG_LEVEL,
+    DEFAULT_LOG_FORMAT
+)
 
 # Imports for python variable type hints
 
@@ -56,9 +60,6 @@ import datetime
 #
 # Global Variables
 #
-DEFAULT_LOG_LEVEL = "INFO"
-DEFAULT_LOG_FORMAT = "%(asctime)s: [%(name)s] [%(levelname)s]: %(message)s"
-
 DEFAULT_CONSOLE_HANDLER_NAME = "TO_CONSOLE"
 
 # Defaults for timed rotating file

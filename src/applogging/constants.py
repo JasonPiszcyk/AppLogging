@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-The Constants used for Testing
+Constants 
 
 Copyright (C) 2025 Jason Piszcyk
 Email: Jason.Piszcyk@gmail.com
@@ -40,24 +40,8 @@ suitability for any particular purpose.
 #
 # Constants
 #
-LOGGER_NAME = "AppLogging"
-
-VALID_LOG_LEVELS = [
-    "CRITICAL",
-    "FATAL",
-    "ERROR",
-    "WARN",
-    "WARNING",
-    "INFO",
-    "DEBUG",
-    "NOTSET",
-]
-
-DEFAULT_LOG_STRING = "The default log string"
-
-VALID_LOG_ENTRY = (
-    "2025-01-01 10:00:00,000: [AppLogging] [ERROR] The default log string"
-)
+DEFAULT_LOG_LEVEL = "INFO"
+DEFAULT_LOG_FORMAT = "%(asctime)s: [%(name)s] [%(levelname)s] %(message)s"
 
 #
 # Global Variables
