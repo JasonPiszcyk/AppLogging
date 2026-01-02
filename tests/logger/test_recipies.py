@@ -28,6 +28,7 @@ along with this program (See file: COPYING). If not, see
 from tests.constants import *
 
 # System Modules
+import pytest
 
 # Local app modules
 from applogging.logging import (
@@ -35,9 +36,10 @@ from applogging.logging import (
     init_console_logger,
     init_file_logger
 )
+from applogging.entry import LogEntry
 
 # Imports for python variable type hints
-from pytest import CaptureFixture
+
 
 ###########################################################################
 #
@@ -75,12 +77,13 @@ class Test_LogToConsole():
     #
     #
     #
-    def test_log_error(self, capsys: CaptureFixture):
+    @pytest.mark.parametrize("log_level", VALID_LOG_LEVELS)
+    def test_log_error(self, log_level, capteesys: pytest.CaptureFixture):
         '''
-        Test logging an error (default threshold is INFO)
+        Test logging a message to all valid log levels
 
         Args:
-            capfd (str, str): Fixture to capture stdout/stderr 
+            capteesys (CaptureFixture): Fixture to capture stdout/stderr 
 
         Returns:
             None
@@ -89,9 +92,84 @@ class Test_LogToConsole():
             AssertionError:
                 when test fails
         '''
+        _severity = str(log_level).lower()
+        if log_level in MAP_LOG_LEVELS.keys():
+            _output_severity = MAP_LOG_LEVELS[log_level]
+        else:
+            _output_severity = log_level
+
+        # Don't try to log to NOTSET
+        if _output_severity == "NOTSET": return
+
         _log = init_console_logger(name=LOGGER_NAME)
+        _log.setLevel(level="DEBUG")
 
-        _log.error(DEFAULT_LOG_STRING)
-        _cap = capsys.readouterr()
+        # See if we can log at requested severity
+        _func = getattr(_log, _severity, None)
+        if callable(_func): _func(DEFAULT_LOG_STRING)
 
-        assert _cap.err == DEFAULT_LOG_STRING
+        _cap = capteesys.readouterr()
+
+        _log_entry = LogEntry(msg=f"{_cap.out}{_cap.err}")
+
+        assert _log_entry.message == DEFAULT_LOG_STRING
+        assert _log_entry.severity == _output_severity
+        assert _log_entry.logger_name == LOGGER_NAME
+
+
+#
+# Log to File
+#
+class Test_LogToFile():
+    '''
+    Test Class - Log to File
+
+    Attributes:
+        None
+    '''
+    #
+    #
+    #
+    @pytest.mark.parametrize("log_level", VALID_LOG_LEVELS)
+    def test_log(self, log_level, logfile):
+        '''
+        Test logging at various levels
+
+        Args:
+            logfile: str
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError:
+                when test fails
+        '''
+        _log_file = logfile
+
+        _severity = str(log_level).lower()
+        if log_level in MAP_LOG_LEVELS.keys():
+            _output_severity = MAP_LOG_LEVELS[log_level]
+        else:
+            _output_severity = log_level
+
+        # Don't try to log to NOTSET
+        if _output_severity == "NOTSET": return
+
+        _log = init_file_logger(name=LOGGER_NAME, filename=_log_file)
+        _log.setLevel(level="DEBUG")
+
+        # See if we can log at requested severity
+        _func = getattr(_log, _severity, None)
+        if callable(_func): _func(DEFAULT_LOG_STRING)
+
+        # Read the log file
+        with open(_log_file, "r") as f:
+            _file_contents = f.read()
+
+        _log_entry = LogEntry(msg=_file_contents)
+
+        assert _log_entry.message == DEFAULT_LOG_STRING
+        assert _log_entry.severity == _output_severity
+        assert _log_entry.logger_name == LOGGER_NAME
+ 

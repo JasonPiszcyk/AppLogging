@@ -41,6 +41,7 @@ suitability for any particular purpose.
 # Constants
 #
 LOGGER_NAME = "AppLogging"
+LOG_FILE_NAME = f"/tmp/{LOGGER_NAME}-test.log"
 
 VALID_LOG_LEVELS = [
     "CRITICAL",
@@ -52,6 +53,13 @@ VALID_LOG_LEVELS = [
     "DEBUG",
     "NOTSET",
 ]
+
+# Log levels may appears as something different in the log output
+MAP_LOG_LEVELS = {
+    "FATAL": "CRITICAL",
+    "WARN": "WARNING"
+}
+
 
 DEFAULT_LOG_STRING = "The default log string"
 

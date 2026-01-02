@@ -55,7 +55,7 @@ from applogging.constants import DEFAULT_LOG_FORMAT
 #   Anything not mapped or delimited is aggregated into msg
 #   Mapping to an empty string means the token is ignored
 #   
-DEFAULT_TOKEN_MAPPING = {
+DEFAULT_TOKEN_MAP = {
     "asctime": { "mapto": "time", "delimiters": [ "", ":" ] },
     "created": { "mapto": "", "delimiters": [ "[", "]" ] },
     "filename": { "mapto": "", "delimiters": [ "[", "]" ] },
@@ -131,7 +131,7 @@ class LogEntry():
             self,
             msg: str = "",
             format: str = DEFAULT_LOG_FORMAT,
-            mapping: dict = {}
+            token_map: dict = {}
     ):
         '''
         Initialises the instance.
@@ -142,7 +142,7 @@ class LogEntry():
         Args:
             msg: (str): The log message to be decoded
             format (str): The format used to create the log entry
-            mapping (dict): Modifications to the Default mapping dict used
+            token_map (dict): Modifications to the default mapping dict used
                 to extract the tokens
 
         Returns:
@@ -163,69 +163,14 @@ class LogEntry():
         self._thread_name = ""
         self._message = ""
 
-        # Manually merge in the default token map
+        # The token map
         self._token_map = {}
-        for _key, _val in DEFAULT_TOKEN_MAPPING.items():
-            # Make sure the entry contains a sub-dict
-            assert isinstance(_val, dict), (
-                f"Invalid default token mapping entry: {_key}"
-            )
 
-            _entry = {
-                "mapto": _val.get("mapto", ""),
-                "delimiters": _val.get("delimiters", [ "[", "]" ])
-            }
-
-            # Ensure mapto is a string
-            assert isinstance(_entry["mapto"], str), (
-                f"mapto must be a string: {_key}"
-            )
-
-            # Make sure delimiters is a list
-            assert isinstance(_entry["delimiters"], list), (
-                f"delimiters must be a list: {_key}"
-            )
-
-            # Add the entry
-            self._token_map[_key] = _entry
+        # Manually merge in the default token map
+        self._merge_token_map(token_map=DEFAULT_TOKEN_MAP)
 
         # Manually merge in any changes to the token map
-        for _key, _val in mapping.items():
-            # Make sure the entry contains a sub-dict
-            assert isinstance(_val, dict), (
-                f"Invalid token mapping entry: {_key}"
-            )
-
-            _entry = {}
-            _default_entry = DEFAULT_TOKEN_MAPPING.get(_key, {})
-
-            for _attr in [ "mapto", "delimiters" ]:
-                if _attr in _val:
-                    _entry[_attr] = _val[_attr]
-
-                elif _attr in _default_entry:
-                    # There is an entry in the default map
-                    _entry[_attr] = _default_entry[_attr]
-
-                else:
-                    # Create a default entry
-                    if _attr in [ "mapto", ]:
-                        _entry[_attr] = ""
-                    elif _attr in [ "delimiters", ]:
-                        _entry[_attr] = [ "[", "]" ]
-
-            # Ensure mapto is a string
-            assert isinstance(_entry["mapto"], str), (
-                f"mapto must be a string: {_key}"
-            )
-
-            # Make sure delimiters is a list
-            assert isinstance(_entry["delimiters"], list), (
-                f"delimiters must be a list: {_key}"
-            )
-
-            # Add the entry
-            self._token_map[_key] = _entry
+        self._merge_token_map(token_map=token_map)
 
         # Attributes
 
@@ -325,6 +270,70 @@ class LogEntry():
     #
     ###########################################################################
     #
+    # _merge_token_map
+    #
+    def _merge_token_map(self, token_map: dict = {}):
+        '''
+        Merge in any changes to the token map
+            
+        Args:
+            token_map (dict): Dict containing updates to the token map
+        
+        Returns:
+            None
+
+        Raises:
+            AssertionError:
+                when token_map is not a dict
+        '''
+        assert isinstance(token_map, dict), "map must be a dict"
+
+        # Go through token_map and merge in any items
+        for _key, _val in token_map.items():
+            # Make sure the entry contains a sub-dict
+            assert isinstance(_val, dict), (
+                f"Invalid token mapping entry: {_key}"
+            )
+
+            # Create a new entry
+            _entry = {}
+
+            # Go through the list of attributes to process
+            for _attr in [ "mapto", "delimiters" ]:
+                if _attr in _val:
+                    # The map contains the attribute - Just set it
+                    _entry[_attr] = _val[_attr]
+
+                else:
+                    # See if there is a default for the attribute
+                    _default_entry = DEFAULT_TOKEN_MAP.get(_key, {})
+
+                    if _attr in _default_entry:
+                        # There is an entry in the default map
+                        _entry[_attr] = _default_entry[_attr]
+
+                    else:
+                        # Create an entry based on some sensible defaults
+                        if _attr in [ "mapto", ]:
+                            _entry[_attr] = ""
+                        elif _attr in [ "delimiters", ]:
+                            _entry[_attr] = [ "[", "]" ]
+
+            # Ensure mapto is a string
+            assert isinstance(_entry["mapto"], str), (
+                f"mapto must be a string: {_key}"
+            )
+
+            # Make sure delimiters is a list
+            assert isinstance(_entry["delimiters"], list), (
+                f"delimiters must be a list: {_key}"
+            )
+
+            # Add the entry
+            self._token_map[_key] = _entry
+
+
+    #
     # _decode_log_entry
     #
     def _decode_log_entry(self, msg: str = "", format: str = ""):
@@ -390,10 +399,6 @@ class LogEntry():
 
         match = re.match(fr"^{_re_format}", msg)
         if match:
-            print(f"Msg: {msg}")
-            print(f"RE Format: {_re_format}")
-            print(f"Match: {match.groupdict()}")
-
             # Process the matched entries
             for _key, _val in match.groupdict().items():
                 # Get the mapto property, and set the attr in the instance
