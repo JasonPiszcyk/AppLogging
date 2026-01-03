@@ -16,9 +16,10 @@ Not yet Published to PyPi
 ## Features
 
 **AppLogging** consists of a number of sub-modules, being:
-- Multiprocessing
-  - A generalised Task interface proving multiprocessing via Process and Threads
-    - Task Lifecycle management including starting, stopping and watchdog processing to ensure task state
+- Logging
+  - General functions to provide a simplified interface to the python logging module
+- LogEntry
+  - A class for processing a log entry string (ie from a log file) and providing access to any tokens.
 
 ## Installation
 
@@ -36,13 +37,25 @@ pip install "applogging @ git+https://github.com/JasonPiszcyk/AppLogging"
 ## Dependencies
 
 - pytest
-- "crypto_tools @ git+https://github.com/JasonPiszcyk/CryptoTools"
 
 ## Usage
 
 ```python
 import applogging
-# Example usage of AppLogging components
+
+# To create a logger outputting to STDOUT/STDERR
+log = applogging.init_console_logger(name="Non-Default Logger")
+
+# Set the level accepted by the logger
+log.setLevel(level="DEBUG")
+
+# Log a message
+log.error("The message")
+
+# Access the logger fom a different module
+log_created_elsewhere = applogging.get_logger(name="Non-Default Logger")
+log_created_elsewhere.error("A different message to previously created logger")
+
 ```
 
 ## Development

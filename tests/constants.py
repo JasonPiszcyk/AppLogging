@@ -43,29 +43,14 @@ suitability for any particular purpose.
 LOGGER_NAME = "AppLogging"
 LOG_FILE_NAME = f"/tmp/{LOGGER_NAME}-test.log"
 
-VALID_LOG_LEVELS = [
-    "CRITICAL",
-    "FATAL",
-    "ERROR",
-    "WARN",
-    "WARNING",
-    "INFO",
-    "DEBUG",
-    "NOTSET",
-]
-
-# Log levels may appears as something different in the log output
+# Some log levels appear as something different in the log output
 MAP_LOG_LEVELS = {
     "FATAL": "CRITICAL",
     "WARN": "WARNING"
 }
 
-
 DEFAULT_LOG_STRING = "The default log string"
-
-VALID_LOG_ENTRY = (
-    "2025-01-01 10:00:00,000: [AppLogging] [ERROR] The default log string"
-)
+DEFAULT_LOG_SEVERITY = "ERROR"
 
 #
 # Global Variables

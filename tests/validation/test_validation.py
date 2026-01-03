@@ -26,6 +26,7 @@ along with this program (See file: COPYING). If not, see
 ###########################################################################
 # Shared variables, constants, etc
 from tests.constants import *
+from applogging.constants import VALID_LOG_LEVELS
 
 # System Modules
 

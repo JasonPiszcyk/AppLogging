@@ -43,6 +43,18 @@ suitability for any particular purpose.
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_LOG_FORMAT = "%(asctime)s: [%(name)s] [%(levelname)s] %(message)s"
 
+# VALID_LOG_LEVELS used for version lower than 3.11
+VALID_LOG_LEVELS = [
+    "CRITICAL",
+    "FATAL",
+    "ERROR",
+    "WARN",
+    "WARNING",
+    "INFO",
+    "DEBUG",
+    "NOTSET",
+]
+
 #
 # Global Variables
 #

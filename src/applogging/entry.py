@@ -96,7 +96,7 @@ TOKEN_TYPING = {
     "taskName": "s"
 }
 
-DELIMITERS_TO_ESCAPE = [ "[", "]", "(", ")", "{", "}" ]
+DELIMITERS_TO_ESCAPE = [ "[", "]", "(", ")" ]
 
 #
 # Global Variables

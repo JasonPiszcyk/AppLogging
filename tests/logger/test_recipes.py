@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-PyTest - Test of usage recipies
+PyTest - Test of usage recipes
 
 Copyright (C) 2025 Jason Piszcyk
 Email: Jason.Piszcyk@gmail.com
@@ -26,16 +26,13 @@ along with this program (See file: COPYING). If not, see
 ###########################################################################
 # Shared variables, constants, etc
 from tests.constants import *
+from applogging.constants import VALID_LOG_LEVELS
 
 # System Modules
 import pytest
 
 # Local app modules
-from applogging.logging import (
-    get_logger,
-    init_console_logger,
-    init_file_logger
-)
+from applogging.logging import init_console_logger, init_file_logger
 from applogging.entry import LogEntry
 
 # Imports for python variable type hints
@@ -78,12 +75,12 @@ class Test_LogToConsole():
     #
     #
     @pytest.mark.parametrize("log_level", VALID_LOG_LEVELS)
-    def test_log_error(self, log_level, capteesys: pytest.CaptureFixture):
+    def test_log_error(self, log_level, capsys: pytest.CaptureFixture):
         '''
         Test logging a message to all valid log levels
 
         Args:
-            capteesys (CaptureFixture): Fixture to capture stdout/stderr 
+            capsys (CaptureFixture): Fixture to capture stdout/stderr 
 
         Returns:
             None
@@ -108,7 +105,7 @@ class Test_LogToConsole():
         _func = getattr(_log, _severity, None)
         if callable(_func): _func(DEFAULT_LOG_STRING)
 
-        _cap = capteesys.readouterr()
+        _cap = capsys.readouterr()
 
         _log_entry = LogEntry(msg=f"{_cap.out}{_cap.err}")
 

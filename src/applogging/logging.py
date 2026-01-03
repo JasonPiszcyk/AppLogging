@@ -29,12 +29,14 @@ from __future__ import annotations
 # Shared variables, constants, etc
 
 # System Modules
+import sys
 import logging
 import logging.handlers
 import datetime
 
 # Local app modules
 from applogging.constants import (
+    VALID_LOG_LEVELS,
     DEFAULT_LOG_LEVEL,
     DEFAULT_LOG_FORMAT
 )
@@ -92,8 +94,14 @@ def is_valid_log_level_string(level: str = "") -> bool:
     # Make sure the log level is a string
     if not isinstance(level, str): return False
 
+    # Get the valid Level Names (getLevelNamesMapping added in 3.11)
+    if sys.version_info < (3, 11):
+        _valid_levels = VALID_LOG_LEVELS
+    else:
+        _valid_levels = logging.getLevelNamesMapping().keys()
+
     # Check if the level is valid
-    return level.upper() in logging.getLevelNamesMapping().keys()
+    return level.upper() in _valid_levels
 
 
 ###########################################################################
