@@ -142,7 +142,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
 #
 def clear_handlers(logger: logging.Logger | None = None):
     '''
-    Clear any handlers associated witht he logger
+    Clear any handlers associated with the logger
 
     Args:
         logging.Logger: A logger

@@ -21,6 +21,29 @@ along with this program (See file: COPYING). If not, see
 '''
 
 # What to import when 'import * from module'
-__all__ = [ ]
+__all__ = [ 
+    "get_logger",
+    "clear_handlers",
+    "init_console_logger",
+    "init_file_logger",
+    "get_log_level",
+    "set_log_level",
+    "handler_to_console",
+    "handler_to_file",
+    "handler_to_timed_rotating_file",
+    "LogEntry"
+]
 
 # What to import as part of the the module (import module)
+from applogging.logging import (
+    get_logger,
+    clear_handlers,
+    init_console_logger,
+    init_file_logger,
+    get_log_level,
+    set_log_level,
+    handler_to_console,
+    handler_to_file,
+    handler_to_timed_rotating_file
+)
+from applogging.entry import LogEntry

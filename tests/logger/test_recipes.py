@@ -72,7 +72,7 @@ class Test_LogToConsole():
         None
     '''
     #
-    #
+    # log
     #
     @pytest.mark.parametrize("log_level", VALID_LOG_LEVELS)
     def test_log_error(self, log_level, capsys: pytest.CaptureFixture):
@@ -80,6 +80,8 @@ class Test_LogToConsole():
         Test logging a message to all valid log levels
 
         Args:
+            log_level (str): Fixture containing the key to process from the
+                VALID_LOG_LEVELS dict
             capsys (CaptureFixture): Fixture to capture stdout/stderr 
 
         Returns:
@@ -125,7 +127,7 @@ class Test_LogToFile():
         None
     '''
     #
-    #
+    # log
     #
     @pytest.mark.parametrize("log_level", VALID_LOG_LEVELS)
     def test_log(self, log_level, logfile):
@@ -133,7 +135,9 @@ class Test_LogToFile():
         Test logging at various levels
 
         Args:
-            logfile: str
+            log_level (str): Fixture containing the key to process from the
+                VALID_LOG_LEVELS dict
+            logfile (str): Fixture managing the log file used during testing
 
         Returns:
             None
